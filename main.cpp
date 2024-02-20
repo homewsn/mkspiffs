@@ -53,6 +53,25 @@ static const char* ignored_file_names[] = {
     ".gitmodules"
 };
 
+#if SPIFFS_HAL_CALLBACK_EXTRA
+static s32_t api_spiffs_read(struct spiffs_t *fs, u32_t addr, u32_t size, u8_t *dst)
+{
+    memcpy(dst, &s_flashmem[0] + addr, size);
+    return SPIFFS_OK;
+}
+
+static s32_t api_spiffs_write(struct spiffs_t *fs, u32_t addr, u32_t size, u8_t *src)
+{
+    memcpy(&s_flashmem[0] + addr, src, size);
+    return SPIFFS_OK;
+}
+
+static s32_t api_spiffs_erase(struct spiffs_t *fs, u32_t addr, u32_t size)
+{
+    memset(&s_flashmem[0] + addr, 0xff, size);
+    return SPIFFS_OK;
+}
+#else
 static s32_t api_spiffs_read(u32_t addr, u32_t size, u8_t *dst)
 {
     memcpy(dst, &s_flashmem[0] + addr, size);
@@ -70,6 +89,7 @@ static s32_t api_spiffs_erase(u32_t addr, u32_t size)
     memset(&s_flashmem[0] + addr, 0xff, size);
     return SPIFFS_OK;
 }
+#endif
 
 static int checkArgs();
 static size_t getFileSize(FILE* fp);
