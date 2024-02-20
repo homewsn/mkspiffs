@@ -21,6 +21,14 @@
 #include <sdkconfig.h>
 
 // Rename defines from menuconfig if present from sdkconfig.h
+#ifdef CONFIG_IDF_TARGET_ESP8266
+#define SPIFFS_ALIGNED_OBJECT_INDEX_TABLES      4
+#define SPIFFS_HAL_CALLBACK_EXTRA               1
+#endif
+#ifdef CONFIG_IDF_TARGET_ESP32
+#define SPIFFS_ALIGNED_OBJECT_INDEX_TABLES      0
+#define SPIFFS_HAL_CALLBACK_EXTRA               0
+#endif
 #ifdef CONFIG_SPIFFS_USE_MAGIC_LENGTH
 #define SPIFFS_USE_MAGIC_LENGTH CONFIG_SPIFFS_USE_MAGIC_LENGTH
 #endif
@@ -180,6 +188,7 @@ typedef uint8_t u8_t;
 #ifndef SPIFFS_OBJ_META_LEN
 #define SPIFFS_OBJ_META_LEN             (0)
 #endif
+#define SPIFFS_PAGE_EXTRA_SIZE          (64)
 
 // Size of buffer allocated on stack used when copying data.
 // Lower value generates more read/writes. No meaning having it bigger
